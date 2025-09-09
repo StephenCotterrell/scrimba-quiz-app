@@ -2,23 +2,33 @@ import React from 'react'
 import { decode } from 'html-entities'
 
 export default function Question(props) {
-    const { questionObject, id } = props
-    const { question, correct_answer, incorrect_answers, allAnswers, grade } = questionObject
-
+    const { questionObject, selection, grade, id } = props
+    const { question, correct_answer, allAnswers } = questionObject
 
     const answersComponent = allAnswers.map((answer, index) => {
-        const className = grade ? correct_answer === answer 
-                            ? 'correct'
-                            : grade === 'incorrect' 
-                                ? 'incorrect over'
-                                : grade === 'correct' 
-                                    ? 'over'
-                                    : 'over' : ''
+        const inputId = `${id}__opt_${index}`
+        const groupName = `q_${id}`
+        
+        const className = selection
+            ?   answer === correct_answer 
+                ? 'correct'
+                : answer === selection
+                    ? 'incorrect over'
+                    : 'over'
+            : ''
         
         return (
             <React.Fragment key={index}>
-                <input type='radio' id={answer} name={id} value={answer} disabled={grade ? true : false} required/>
-                <label className={className} htmlFor={answer}>{decode(answer)}</label>
+                <input type='radio'
+                    id={inputId}
+                    name={groupName}
+                    value={answer}
+                    disabled={!!grade}
+                    required
+                />
+                <label className={className} htmlFor={inputId}>
+                    {decode(answer)}
+                </label>
             </React.Fragment>
         )
     })
